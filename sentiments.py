@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
-import re
 import os
-import requests
+import re
+import pandas as pd
 from textblob_de import TextBlobDE as TextBlob
 
 # TODO reassign it all to big dataframe
@@ -18,7 +17,7 @@ dataframe = pd.read_pickle(os.path.join('data', 'testing_dataframe.pkl'))
 
 
 # Sentiment analysis
-# Get sentiments with TextBlob
+# Get sentiments with TextBlob DE
 
 def get_sentiments_blob(sentence):
     text = TextBlob(sentence)
@@ -32,7 +31,7 @@ def get_polarity_by_newspaper(corpus):
         sentence_list = re.split('[?.!]', daily_paper)
         for sentence in sentence_list:
             sentiment_score += get_sentiments_blob(sentence)
-        sentiment_list.append(sentiment_score/len(sentiment_list))
+        sentiment_list.append(sentiment_score/len(sentiment_list) if len(sentiment_list) != 0 else 0)
     return sentiment_list
 
 
@@ -41,5 +40,3 @@ def get_polarity_by_newspaper(corpus):
 
 dataframe["polarity_by_newspaper"] = get_polarity_by_newspaper(dataframe.text)
 dataframe.to_pickle("data/dataframe_with_polarity.pkl")
-
-
