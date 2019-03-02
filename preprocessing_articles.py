@@ -7,7 +7,6 @@ import os
 import pickle
 import time
 import zipfile
-from pprint import pprint
 
 from tqdm import tqdm
 import pandas as pd
@@ -77,7 +76,7 @@ def clean(articles_df: pd.DataFrame, word_occurence_threshold: int = 5):
     nlp.Defaults.stop_words |= {
         "Nr", "herr", "frau", "abend", "mann", "sucht", "nickt", "januar", "jänner", "februar", "märz", "april", "mai",
         "juni", "juli", "august", "september", "oktober", "november", "dezember", "montag", "dienstag", "mittwoch",
-        "donnerstag", "freitag", "samstag", "sonntag"
+        "donnerstag", "freitag", "samstag", "sonntag", "letzten", "bill"
     }
     interval_size = 250
     num_iter = math.ceil(len(articles_df) / interval_size)
@@ -256,36 +255,6 @@ def preprocess_corpus(filepath: str, force_recompilation: bool = False):
     transform_texts_to_corpus_ids(articles, id2word, force_recompilation)
 
 
-def create_dynamic_topic_model(corpus_filepath: str, dict_filepath: str, time_slices: list):
-    """
-    Creates topic models based on preprocessed data.
-    :param corpus_filepath:
-    :param dict_filepath:
-    :param time_slices:
-    :return:
-    """
-
-    path_to_dtm_binary = "/home/raphael/Development/dtm/dtm/"
-
-    corpus = gensim.corpora.MmCorpus(gensim_test_utils.datapath(corpus_filepath))
-    id2word = gensim.corpora.Dictionary.load(fname=dict_filepath)
-
-    print("generating model")
-    lda_model = gensim.models.ldamodel.LdaModel(
-        corpus=corpus,
-        id2word=id2word,
-        num_topics=10,
-        random_state=100,
-        update_every=1,
-        chunksize=1000,
-        passes=20,
-        alpha='auto',
-        per_word_topics=True
-    )
-
-    pprint(lda_model.print_topics())
-
-
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
     logger = logging.getLogger("preprocessing")
@@ -295,15 +264,5 @@ if __name__ == '__main__':
     #clean(df, word_occurence_threshold=15)
     #df.to_pickle("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
     # stem(df)
-    # preprocess_corpus("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
+    #preprocess_corpus("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
 
-    create_dynamic_topic_model(
-        corpus_filepath="/home/raphael/Development/dh-hackathon/corpus.mm",
-        dict_filepath="/home/raphael/Development/dh-hackathon/id2word.dict",
-        # Get time_slices sorted by year and month, ascendingly.
-        # Important: Has to match with sequence in which documents where fed to corpus generation procedure (i. e. sort
-        # dataframe the same way before generating corpus)."
-        time_slices=pd.read_pickle(
-            "~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl"
-        ).groupby(["year", "month"]).size().values.tolist()
-    )
