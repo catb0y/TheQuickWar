@@ -10,4 +10,4 @@
 
 **How it was done, and the data story**
 
-See the story and the presentation of the project.
+See the story and the presentation of the project here: https://medium.com/@marta.p/the-quick-war-the-perception-of-wwi-in-germany-local-daily-newspapers-of-the-time-5537c3b5e5c0.
