@@ -76,7 +76,10 @@ def clean(articles_df: pd.DataFrame, word_occurence_threshold: int = 5):
     nlp.Defaults.stop_words |= {
         "Nr", "herr", "frau", "abend", "mann", "sucht", "nickt", "januar", "jänner", "februar", "märz", "april", "mai",
         "juni", "juli", "august", "september", "oktober", "november", "dezember", "montag", "dienstag", "mittwoch",
-        "donnerstag", "freitag", "samstag", "sonntag", "letzten", "bill"
+        "donnerstag", "freitag", "samstag", "sonntag", "letzten", "bill", "hamburg", "hamburger", "deutsch",
+        "deutscher", "deutsche", "deutschland", "deutschen", "berlin", "bereit", "lassen", "ihren", "find", "meldet",
+        "gestern", "karl", "paul", "otto", "hermann", "schwer", "sept", "herren", "friedrich", "wilhelm", "heinrich",
+        "frage", "sofort", "voll", "herrn"
     }
     interval_size = 250
     num_iter = math.ceil(len(articles_df) / interval_size)
@@ -264,5 +267,5 @@ if __name__ == '__main__':
     #clean(df, word_occurence_threshold=15)
     #df.to_pickle("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
     # stem(df)
-    #preprocess_corpus("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
+    preprocess_corpus("~/Development/data/dh-hackathon/cleaned_filtered_documents-tau15.pkl")
 
