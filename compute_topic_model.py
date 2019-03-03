@@ -16,33 +16,23 @@ def postprocess_topic_model(corpus_filepath: str, model_filepath: str, articles_
     :return:
     """
     corpus = gensim.corpora.MmCorpus(gensim_test_utils.datapath(corpus_filepath))
-    model = gensim.models.LdaSeqModel.load(fname=model_filepath)
+    model = gensim.models.LdaModel.load(fname=model_filepath)
     id2word = gensim.corpora.Dictionary.load(fname=dict_filepath)
     df = pd.read_pickle(articles_filepath)
 
     # Store topics-in-article probabilities in dataframe.
-    # df["topic_probs"] = [model.doc_topics(i) for i in range(0, len(corpus))]
-
-    # df["topic_probs"] = [model.get_document_topics(doc) for doc in corpus]
+    df["topic_probs"] = [model.get_document_topics(doc) for doc in corpus]
     # Split topic probabilities into columns. Note: Assumes 6 topics.
-    # df[["topic_" + str(i) for i in range(0, 6)]] = pd.DataFrame(df.topic_probs.values.tolist(), index=df.index)
-    df = pd.read_pickle("tmp.pkl")
-    def test(rec):
-        print(rec)
-        print(type(rec))
-        exit()
-    df[["topic_" + str(i) for i in range(0, 6)]] = df[["topic_" + str(i) for i in range(0, 6)]].apply(
-        lambda x: test(x)
-    )
+    df[["topic_" + str(i) for i in range(0, 6)]] = pd.DataFrame(df.topic_probs.values.tolist(), index=df.index)
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None):
-        print(df.head(10)[["topic_" + str(i) for i in range(0, 6)]])
-    exit()
+    for topic_id in ["topic_" + str(i) for i in range(0, 6)]:
+        df[topic_id] = df[topic_id].apply(lambda x: x[1] if x is not None else 0)
+    
     # Group articles by year and month; compute average topic relevance over these attributes.
     res = df.drop("day", axis=1).groupby(["year", "month"]).mean()
-
     with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None):
-        print(df.head(10))
+        print(res)
+    res.to_pickle("res.pkl")
 
 
 def create_dynamic_topic_model(corpus_filepath: str, dict_filepath: str, time_slices: list):
