@@ -1,5 +1,7 @@
 ## The Quick War? 
 ### The perception of WWI in Germany local daily newspapers of the time
+*[Second place at the ACDH hackathon ODD](https://github.com/acdh-oeaw/ACDHhackathonODD)  :trophy:*
+
 
 **How-to**
 - Clone repository
